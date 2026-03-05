@@ -5,6 +5,13 @@
 // ── IMAGE HELPER ─────────────────────────────────────────────
 const U = (id, w = 400, h = 280) =>
     `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&h=${h}&q=80`;
+const fmt = n => `₹${Math.round(n).toLocaleString('en-IN')}`;
+
+// ══ GOOGLE OAUTH CONFIG ════════════════════════════════════════════
+// Get your free Client ID from: https://console.cloud.google.com
+// (APIs & Services → OAuth 2.0 Client IDs → Web application)
+const GOOGLE_CLIENT_ID = ''; // ← Paste your Client ID here
+
 
 // ── DISHES DATA (36 dishes with real Unsplash images) ─────────
 const DISHES = [
@@ -50,7 +57,7 @@ const DISHES = [
 
     // COLD DRINKS
     { id: 27, name: 'Nimbu Pani', chef: 'Marco L.', chefId: 2, price: 1.99, originalPrice: null, category: 'Cold Drinks', dietary: 'Vegan', rating: 4.8, emoji: '🍋', discount: null, desc: 'Fresh squeezed lemon water with black salt, cumin & mint. Indian salty lemonade.', imageUrl: U('photo-1621506289937-a8e4df240d0b') },
-    { id: 28, name: 'Aam Panna', chef: 'Priya S.', chefId: 1, price: 2.49, originalPrice: null, category: 'Cold Drinks', dietary: 'Vegan', rating: 4.7, emoji: '🥭', discount: null, desc: 'Raw green mango drink with roasted cumin, black salt & mint. A summer classic.', imageUrl: U('photo-1560508180-03f285f67ded') },
+    { id: 28, name: 'Aam Panna', chef: 'Priya S.', chefId: 1, price: 2.49, originalPrice: null, category: 'Cold Drinks', dietary: 'Vegan', rating: 4.7, emoji: '🥭', discount: null, desc: 'Raw green mango drink with roasted cumin, black salt & mint. A summer classic.', imageUrl: U('photo-1621506289937-a8e4df240d0b') },
     { id: 29, name: 'Jaljeera Punch', chef: 'Lena K.', chefId: 3, price: 1.99, originalPrice: null, category: 'Cold Drinks', dietary: 'Vegan', rating: 4.6, emoji: '🫙', discount: null, desc: 'Tangy cumin water punch with mint, ginger, tamarind & black salt.', imageUrl: U('photo-1570197788417-0e82375c9371') },
     { id: 30, name: 'Coconut Water', chef: 'Marco L.', chefId: 2, price: 2.99, originalPrice: null, category: 'Cold Drinks', dietary: 'Vegan', rating: 4.9, emoji: '🥥', discount: null, desc: 'Fresh tender coconut water served straight from the coconut with ice.', imageUrl: U('photo-1553361371-9b22f78e8b1d') },
     { id: 31, name: 'Sugarcane Juice', chef: 'Lena K.', chefId: 3, price: 2.49, originalPrice: null, category: 'Cold Drinks', dietary: 'Vegan', rating: 4.8, emoji: '🌿', discount: null, desc: 'Freshly pressed sugarcane juice with lemon, ginger & black salt.', imageUrl: U('photo-1615485290382-441e4d049cb5') },
@@ -287,7 +294,103 @@ function backToPhone() {
 function handleSocialLogin(provider) {
     showToast(`🔒 ${provider} login coming soon!`, '');
 }
-function quickSignup() { showToast('📝 Sign up form coming soon!', ''); }
+function handleGoogleLogin() {
+    if (!GOOGLE_CLIENT_ID || GOOGLE_CLIENT_ID === '') {
+        showToast('⚙️ Set your Google Client ID in app.js first!', '');
+        return;
+    }
+    if (typeof google === 'undefined') {
+        showToast('⚠️ Google Sign-In not loaded. Check internet connection.', 'error');
+        return;
+    }
+    google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleCredential,
+        auto_select: false,
+    });
+    google.accounts.id.prompt((notification) => {
+        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+            // Fallback: open accounts.google.com
+            window.open(
+                `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${encodeURIComponent(location.origin)}&response_type=token&scope=email%20profile`,
+                '_blank', 'width=500,height=600'
+            );
+        }
+    });
+}
+function handleGoogleCredential(response) {
+    try {
+        const payload = JSON.parse(atob(response.credential.split('.')[1]));
+        const name = payload.name || payload.email.split('@')[0];
+        const email = payload.email;
+        const avatar = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+        const accounts = getAccounts();
+        if (!accounts.find(a => a.email === email)) {
+            accounts.push({ email, name, password: '', avatar, google: true });
+            saveAcct(accounts);
+        }
+        loginSuccess({ name, email, avatar });
+        showToast(`🎉 Welcome, ${name}!`, 'success');
+    } catch (e) {
+        showToast('⚠️ Google sign-in failed. Please try again.', 'error');
+    }
+}
+// ── ACCOUNT MANAGEMENT ──────────────────────────────────────
+const ACCT_KEY = 'ck_accounts';
+function getAccounts() { return JSON.parse(localStorage.getItem(ACCT_KEY) || '[]'); }
+function saveAcct(a) { localStorage.setItem(ACCT_KEY, JSON.stringify(a)); }
+
+function quickSignup() {
+    const m = document.getElementById('signup-modal');
+    if (m) { m.style.display = 'flex'; setTimeout(() => document.getElementById('su-email').focus(), 100); }
+}
+function closeSignupModal() {
+    document.getElementById('signup-modal').style.display = 'none';
+    document.getElementById('su-step-1').style.display = 'block';
+    document.getElementById('su-step-2').style.display = 'none';
+    document.getElementById('su-step-3').style.display = 'none';
+    document.getElementById('su-email').value = '';
+}
+function checkSignupEmail() {
+    const email = document.getElementById('su-email').value.trim();
+    if (!email || !email.includes('@')) { showToast('⚠️ Enter a valid email', 'error'); return; }
+    const found = getAccounts().find(a => a.email.toLowerCase() === email.toLowerCase());
+    if (found) {
+        document.getElementById('su-step-1').style.display = 'none';
+        document.getElementById('su-step-3').style.display = 'block';
+        document.getElementById('su-found-email').textContent = email;
+        setTimeout(() => {
+            closeSignupModal();
+            document.getElementById('login-email').value = email;
+            document.getElementById('login-password').focus();
+            showToast('👋 Account found! Enter your password.', '');
+        }, 2000);
+    } else {
+        document.getElementById('su-step-1').style.display = 'none';
+        document.getElementById('su-step-2').style.display = 'block';
+        document.getElementById('su-email-display').textContent = email;
+    }
+}
+function backToEmailStep() {
+    document.getElementById('su-step-2').style.display = 'none';
+    document.getElementById('su-step-1').style.display = 'block';
+}
+function createAccount() {
+    const email = document.getElementById('su-email-display').textContent;
+    const name = document.getElementById('su-name').value.trim();
+    const pass = document.getElementById('su-password').value;
+    const conf = document.getElementById('su-confirm').value;
+    if (!name) { showToast('⚠️ Please enter your name', 'error'); return; }
+    if (pass.length < 6) { showToast('⚠️ Password must be 6+ characters', 'error'); return; }
+    if (pass !== conf) { showToast('⚠️ Passwords do not match', 'error'); return; }
+    const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+    const accounts = getAccounts();
+    accounts.push({ email, name, password: pass, avatar: initials });
+    saveAcct(accounts);
+    closeSignupModal();
+    loginSuccess({ name, email, avatar: initials });
+    showToast('🎉 Account created! Welcome to CloudKitchen!', 'success');
+}
 
 function loginSuccess(user) {
     clearInterval(otpTimerInterval);
@@ -436,7 +539,7 @@ function dishCardHTML(d) {
       <div class="dish-name">${d.name}</div>
       <div class="dish-desc">${d.desc}</div>
       <div class="dish-footer">
-        <div class="dish-price">$${d.price.toFixed(2)}${d.originalPrice ? `<small>$${d.originalPrice.toFixed(2)}</small>` : ''}</div>
+        <div class="dish-price">${fmt(d.price)}${d.originalPrice ? `<small>${fmt(d.originalPrice)}</small>` : ''}</div>
         ${ctrlHTML}
       </div>
     </div>
@@ -482,7 +585,7 @@ function renderCartItems() {
     container.innerHTML = cart.map(item => `
     <div class="cart-item">
       <div class="cart-item-emoji">${item.emoji}</div>
-      <div class="cart-item-info"><div class="cart-item-name">${item.name}</div><div class="cart-item-price">$${(item.price * item.qty).toFixed(2)}</div></div>
+      <div class="cart-item-info"><div class="cart-item-name">${item.name}</div><div class="cart-item-price">${fmt(item.price * item.qty)}</div></div>
       <div class="cart-item-qty">
         <button class="cart-qty-btn" onclick="updateQty(${item.id},-1)">−</button>
         <span class="cart-qty-val">${item.qty}</span>
@@ -490,9 +593,9 @@ function renderCartItems() {
       </div>
     </div>`).join('');
     const sub = cart.reduce((s, c) => s + c.price * c.qty, 0);
-    document.getElementById('subtotal').textContent = `$${sub.toFixed(2)}`;
-    document.getElementById('tax').textContent = `$${(sub * 0.05).toFixed(2)}`;
-    document.getElementById('total').textContent = `$${(sub * 1.05).toFixed(2)}`;
+    document.getElementById('subtotal').textContent = fmt(sub);
+    document.getElementById('tax').textContent = fmt(sub * 0.05);
+    document.getElementById('total').textContent = fmt(sub * 1.05);
 }
 
 function toggleCart() {
@@ -516,7 +619,7 @@ function placeOrder() {
     const sub = cart.reduce((s, c) => s + c.price * c.qty, 0);
     const id = '#' + Math.floor(10000 + Math.random() * 90000);
     const now = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-    orders.unshift({ id, items: [...cart], total: (sub * 1.05).toFixed(2), type: orderType, status: 'Pending', time: now });
+    orders.unshift({ id, items: [...cart], total: Math.round(sub * 1.05), type: orderType, status: 'Pending', time: now });
     cart = []; toggleCart(); updateCartUI(); renderDishes();
     showToast(`🎉 Order ${id} placed!`, 'success');
     setTimeout(() => { const o = orders.find(x => x.id === id); if (o) o.status = 'Cooking'; showToast('👨‍🍳 Your order is being cooked!', ''); }, 5000);
@@ -583,7 +686,7 @@ function renderOrders() {
       <div class="order-info"><h4>${o.id} — ${o.type}</h4><p>${items}</p><p style="margin-top:4px;font-size:0.75rem;color:#9ca3af;">🕐 ${o.time}</p></div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
         <span class="order-status ${sc}">${em} ${o.status}</span>
-        <span class="order-total">$${o.total}</span>
+        <span class="order-total">${fmt(o.total)}</span>
       </div>
     </div>`;
     }).join('');

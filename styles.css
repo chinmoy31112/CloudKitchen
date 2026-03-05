@@ -58,7 +58,8 @@ body {
 
 .login-left {
     flex: 1.2;
-    background: linear-gradient(145deg, #14532d 0%, #166534 40%, #15803d 80%, #22c55e 100%);
+    background: linear-gradient(145deg, rgba(20, 83, 45, 0.92) 0%, rgba(22, 101, 52, 0.88) 40%, rgba(21, 128, 61, 0.86) 80%, rgba(34, 197, 94, 0.9) 100%),
+        url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=800&q=80') center/cover no-repeat;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -858,7 +859,8 @@ body {
 /* ── HERO ── */
 .hero-banner {
     margin: 18px 24px;
-    background: linear-gradient(135deg, #16a34a 0%, #22c55e 50%, #4ade80 100%);
+    background: linear-gradient(135deg, rgba(22, 163, 74, 0.92) 0%, rgba(34, 197, 94, 0.85) 55%, rgba(74, 222, 128, 0.88) 100%),
+        url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
     border-radius: var(--radius);
     padding: 26px 30px;
     display: flex;
@@ -867,6 +869,22 @@ body {
     color: white;
     overflow: hidden;
     position: relative;
+}
+
+.hero-right-img {
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+}
+
+.hero-right-img img {
+    width: 220px;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 14px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+    border: 3px solid rgba(255, 255, 255, 0.25);
+    animation: float 3s ease-in-out infinite;
 }
 
 .hero-banner::before {
@@ -2276,4 +2294,125 @@ body {
         width: 100vw;
         right: -100vw;
     }
+}
+
+/* ── Signup Modal ── */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10001;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.signup-box {
+    background: white;
+    border-radius: 24px;
+    padding: 36px 32px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    animation: popIn 0.35s cubic-bezier(.34, 1.56, .64, 1);
+    position: relative;
+}
+
+.modal-close-x {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: #f5f5fa;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.modal-close-x:hover {
+    background: #e5e7eb;
+}
+
+.signup-icon {
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.signup-box h3 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 6px;
+    text-align: center;
+}
+
+.su-email-label {
+    font-size: 0.82rem;
+    background: #f0fdf4;
+    border-radius: 8px;
+    padding: 8px 14px;
+    margin-bottom: 14px;
+    text-align: center;
+    color: #374151;
+}
+
+.su-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid #e5e7eb;
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 20px auto 0;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* line-clamp compat */
+.dish-desc {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+}
+
+/* Google Login Button */
+.google-login-btn {
+    width: 100%;
+    padding: 13px 20px;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.google-login-btn:hover {
+    border-color: #4285F4;
+    background: #f8f9ff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(66, 133, 244, 0.2);
 }
