@@ -384,6 +384,43 @@
 
     </div><!-- end .app-wrapper -->
 
+
+    <!-- GOOGLE PICKER MODAL -->
+    <div id="google-picker"
+        style="display:none;position:fixed;inset:0;z-index:10003;background:rgba(0,0,0,0.45);align-items:center;justify-content:center">
+        <div class="gp-box">
+            <button class="modal-close-x" onclick="closeGooglePicker()" style="top:10px;right:10px">&#x2715;</button>
+            <div class="gp-header">
+                <svg viewBox="0 0 48 48" width="48" height="48">
+                    <path fill="#4285F4"
+                        d="M44.5 20H24v8.5h11.8C34.6 33.1 30 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 2.9l6.3-6.3C34.5 5.6 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 19.7-7.7 19.7-20 0-1.3-.1-2.7-.2-4z" />
+                    <path fill="#34A853"
+                        d="M6.3 14.7l7 5.1C15.1 16.6 19.2 14 24 14c3.1 0 5.8 1.1 7.9 2.9l6.3-6.3C34.5 7.6 29.6 6 24 6 16.3 6 9.7 9.6 6.3 14.7z" />
+                    <path fill="#FBBC05"
+                        d="M24 44c5.8 0 10.7-2 14.3-5.3l-6.6-5.6C29.7 34.9 27 36 24 36c-5.9 0-10.9-4-12.7-9.5L4.2 32c3.5 7 10.7 12 19.8 12z" />
+                    <path fill="#EA4335"
+                        d="M44.5 20H24v8.5h11.8c-.8 2.3-2.2 4.2-4.1 5.6l6.6 5.6C41.9 36.2 44.5 30.6 44.5 24c0-1.3-.1-2.7-.2-4z" />
+                </svg>
+                <h3 class="gp-title">Sign in</h3>
+                <p class="gp-sub">Use your Google Account</p>
+            </div>
+            <div id="gp-step-1">
+                <div class="form-group"><input class="gp-input" type="email" id="gp-email" placeholder="Email or phone"
+                        onkeydown="if(event.key==='Enter')googlePickerNext()" /></div>
+                <div class="gp-actions"><button class="gp-btn" onclick="googlePickerNext()">Next</button></div>
+                <p style="text-align:center;font-size:0.8rem;color:#5f6368;margin-top:14px">Not your computer? <a
+                        href="#" style="color:#1a73e8">Use Guest mode</a></p>
+            </div>
+            <div id="gp-step-2" style="display:none">
+                <div class="gp-account-pill"><span>📧</span><span id="gp-email-disp"></span></div>
+                <div class="form-group"><input class="gp-input" type="password" id="gp-password"
+                        placeholder="Enter your password" onkeydown="if(event.key==='Enter')googleSignIn()" /></div>
+                <div class="gp-actions"><a href="#" onclick="googlePickerBack()" class="gp-back">Back</a><button
+                        class="gp-btn" onclick="googleSignIn()">Next</button></div>
+            </div>
+        </div>
+    </div>
+
     <!-- SIGNUP MODAL -->
     <div class="modal-overlay" id="signup-modal" style="display:none">
         <div class="signup-box">

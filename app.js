@@ -295,45 +295,41 @@ function handleSocialLogin(provider) {
     showToast(`🔒 ${provider} login coming soon!`, '');
 }
 function handleGoogleLogin() {
-    if (!GOOGLE_CLIENT_ID || GOOGLE_CLIENT_ID === '') {
-        showToast('⚙️ Set your Google Client ID in app.js first!', '');
-        return;
-    }
-    if (typeof google === 'undefined') {
-        showToast('⚠️ Google Sign-In not loaded. Check internet connection.', 'error');
-        return;
-    }
-    google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: handleGoogleCredential,
-        auto_select: false,
-    });
-    google.accounts.id.prompt((notification) => {
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-            // Fallback: open accounts.google.com
-            window.open(
-                `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${encodeURIComponent(location.origin)}&response_type=token&scope=email%20profile`,
-                '_blank', 'width=500,height=600'
-            );
-        }
-    });
+    const picker = document.getElementById('google-picker');
+    picker.style.display = 'flex';
+    setTimeout(() => document.getElementById('gp-email').focus(), 120);
 }
-function handleGoogleCredential(response) {
-    try {
-        const payload = JSON.parse(atob(response.credential.split('.')[1]));
-        const name = payload.name || payload.email.split('@')[0];
-        const email = payload.email;
-        const avatar = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-        const accounts = getAccounts();
-        if (!accounts.find(a => a.email === email)) {
-            accounts.push({ email, name, password: '', avatar, google: true });
-            saveAcct(accounts);
-        }
-        loginSuccess({ name, email, avatar });
-        showToast(`🎉 Welcome, ${name}!`, 'success');
-    } catch (e) {
-        showToast('⚠️ Google sign-in failed. Please try again.', 'error');
-    }
+function closeGooglePicker() {
+    document.getElementById('google-picker').style.display = 'none';
+    document.getElementById('gp-step-1').style.display = 'block';
+    document.getElementById('gp-step-2').style.display = 'none';
+    document.getElementById('gp-email').value = '';
+    if (document.getElementById('gp-password')) document.getElementById('gp-password').value = '';
+}
+function googlePickerNext() {
+    const email = document.getElementById('gp-email').value.trim();
+    if (!email || !email.includes('@')) { showToast('⚠️ Enter a valid email', 'error'); return; }
+    document.getElementById('gp-email-disp').textContent = email;
+    document.getElementById('gp-step-1').style.display = 'none';
+    document.getElementById('gp-step-2').style.display = 'block';
+    document.getElementById('gp-password').focus();
+}
+function googlePickerBack() {
+    document.getElementById('gp-step-2').style.display = 'none';
+    document.getElementById('gp-step-1').style.display = 'block';
+}
+function googleSignIn() {
+    const email = document.getElementById('gp-email').value.trim();
+    const pass = document.getElementById('gp-password').value;
+    if (!pass) { showToast('⚠️ Enter your password', 'error'); return; }
+    const name = email.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    const avatar = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+    const accounts = getAccounts();
+    if (!accounts.find(a => a.email === email)) accounts.push({ email, name, password: pass, avatar, google: true });
+    saveAcct(accounts);
+    closeGooglePicker();
+    loginSuccess({ name, email, avatar });
+    showToast(`🎉 Welcome, ${name}!`, 'success');
 }
 // ── ACCOUNT MANAGEMENT ──────────────────────────────────────
 const ACCT_KEY = 'ck_accounts';
