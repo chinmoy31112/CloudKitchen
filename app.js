@@ -1,77 +1,77 @@
 ﻿// ============================================================
-//  CLOUD KITCHEN â€” APP.JS  (v2 â€” Enhanced)
+//  COOKGPT — APP.JS  (v2 — Enhanced)
 // ============================================================
 
-// â”€â”€ IMAGE HELPER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// — IMAGE HELPER ——————————————————————————————————————————————————
 const U = (id, w = 400, h = 280) =>
     `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&h=${h}&q=80`;
-const fmt = n => `â‚¹${Math.round(n).toLocaleString('en-IN')}`;
+const fmt = n => `₹${Math.round(n).toLocaleString('en-IN')}`;
 
-// â•â• GOOGLE OAUTH CONFIG â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// — GOOGLE OAUTH CONFIG ———————————————————————————————————————————
 // Get your free Client ID from: https://console.cloud.google.com
-// (APIs & Services â†’ OAuth 2.0 Client IDs â†’ Web application)
-const GOOGLE_CLIENT_ID = ''; // â† Paste your Client ID here
+// (APIs & Services → OAuth 2.0 Client IDs → Web application)
+const GOOGLE_CLIENT_ID = ''; // ← Paste your Client ID here
 
 
-// â”€â”€ DISHES DATA (36 dishes with real Unsplash images) â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// — DISHES DATA (36 dishes with real Unsplash images) ————————————
 const DISHES = [
     // BREAKFAST
-    { id: 1, name: 'Masala Omelette Wrap', chef: 'Priya S.', chefId: 1, price: 8.99, originalPrice: 11.99, category: 'Breakfast', dietary: 'Veg', rating: 4.8, emoji: 'ðŸŒ¯', discount: '25% OFF', desc: 'Fluffy eggs with spiced veggies wrapped in a soft tortilla.', imageUrl: U('photo-1525351484163-7529414344d8') },
-    { id: 2, name: 'Avocado Toast Stack', chef: 'Marco L.', chefId: 2, price: 9.99, originalPrice: null, category: 'Breakfast', dietary: 'Vegan', rating: 4.6, emoji: 'ðŸ¥‘', discount: null, desc: 'Toasted sourdough with smashed avocado, cherry tomatoes & microgreens.', imageUrl: U('photo-1541519227354-08fa5d50c820') },
-    { id: 3, name: 'French Toast with Berries', chef: 'Lena K.', chefId: 3, price: 7.99, originalPrice: null, category: 'Breakfast', dietary: 'Veg', rating: 4.7, emoji: 'ðŸž', discount: null, desc: 'Golden brioche dipped in vanilla custard, topped with fresh berries.', imageUrl: U('photo-1484723091739-30a097e8f929') },
-    { id: 4, name: 'Chicken Shakshuka', chef: 'Priya S.', chefId: 1, price: 11.49, originalPrice: null, category: 'Breakfast', dietary: 'Non-Veg', rating: 4.9, emoji: 'ðŸ³', discount: null, desc: 'Poached eggs in a rich spiced tomato sauce with chicken chunks.', imageUrl: U('photo-1586190848861-99aa4a171e90') },
+    { id: 1, name: 'Masala Omelette Wrap', chef: 'Priya S.', chefId: 1, price: 8.99, originalPrice: 11.99, category: 'Breakfast', dietary: 'Veg', rating: 4.8, emoji: '🍳', discount: '25% OFF', desc: 'Fluffy eggs with spiced veggies wrapped in a soft tortilla.', imageUrl: U('photo-1525351484163-7529414344d8') },
+    { id: 2, name: 'Avocado Toast Stack', chef: 'Marco L.', chefId: 2, price: 9.99, originalPrice: null, category: 'Breakfast', dietary: 'Vegan', rating: 4.6, emoji: '🥑', discount: null, desc: 'Toasted sourdough with smashed avocado, cherry tomatoes & microgreens.', imageUrl: U('photo-1541519227354-08fa5d50c820') },
+    { id: 3, name: 'French Toast with Berries', chef: 'Lena K.', chefId: 3, price: 7.99, originalPrice: null, category: 'Breakfast', dietary: 'Veg', rating: 4.7, emoji: '🥞', discount: null, desc: 'Golden brioche dipped in vanilla custard, topped with fresh berries.', imageUrl: U('photo-1484723091739-30a097e8f929') },
+    { id: 4, name: 'Chicken Shakshuka', chef: 'Priya S.', chefId: 1, price: 11.49, originalPrice: null, category: 'Breakfast', dietary: 'Non-Veg', rating: 4.9, emoji: '🥚', discount: null, desc: 'Poached eggs in a rich spiced tomato sauce with chicken chunks.', imageUrl: U('photo-1586190848861-99aa4a171e90') },
 
     // SNACKS (Indian)
-    { id: 5, name: 'Crispy Samosa', chef: 'Priya S.', chefId: 1, price: 3.99, originalPrice: null, category: 'Snacks', dietary: 'Veg', rating: 4.8, emoji: 'ðŸ¥Ÿ', discount: null, desc: 'Golden crispy pastry filled with spiced potatoes & green peas. Served with mint chutney.', imageUrl: U('photo-1601050690597-df0568f70950') },
-    { id: 6, name: 'Vada Pav', chef: 'Priya S.', chefId: 1, price: 2.99, originalPrice: null, category: 'Snacks', dietary: 'Veg', rating: 4.7, emoji: 'ðŸ«”', discount: null, desc: "Mumbai's iconic street food â€” spiced potato fritter in a soft bun with garlic chutney.", imageUrl: U('photo-1606491956689-2ea866880c84') },
-    { id: 7, name: 'Masala Pakora', chef: 'Lena K.', chefId: 3, price: 3.49, originalPrice: 4.49, category: 'Snacks', dietary: 'Veg', rating: 4.6, emoji: 'ðŸ«˜', discount: '22% OFF', desc: 'Crispy gram flour fritters loaded with onion, spinach & fresh coriander.', imageUrl: U('photo-1674143683189-38c9e3e2f02a') },
-    { id: 8, name: 'Aloo Tikki Chaat', chef: 'Priya S.', chefId: 1, price: 4.99, originalPrice: null, category: 'Snacks', dietary: 'Veg', rating: 4.9, emoji: 'ðŸ«™', discount: null, desc: 'Crispy spiced potato patties topped with chutneys, yoghurt & sev.', imageUrl: U('photo-1668236543090-82eba5ee5976') },
-    { id: 9, name: 'Pav Bhaji', chef: 'Marco L.', chefId: 2, price: 5.99, originalPrice: null, category: 'Snacks', dietary: 'Veg', rating: 4.8, emoji: 'ðŸž', discount: null, desc: 'Thick mixed vegetable curry served with buttered toasted pav bun.', imageUrl: U('photo-1626132647523-68c12db9e1a3') },
-    { id: 10, name: 'Bhel Puri', chef: 'Lena K.', chefId: 3, price: 3.49, originalPrice: null, category: 'Snacks', dietary: 'Vegan', rating: 4.5, emoji: 'ðŸ¥—', discount: null, desc: 'Puffed rice mixed with onion, tomato, tamarind chutney & spices.', imageUrl: U('photo-1565557623262-b51c2513a641') },
+    { id: 5, name: 'Crispy Samosa', chef: 'Priya S.', chefId: 1, price: 3.99, originalPrice: null, category: 'Snacks', dietary: 'Veg', rating: 4.8, emoji: '🥟', discount: null, desc: 'Golden crispy pastry filled with spiced potatoes & green peas. Served with mint chutney.', imageUrl: U('photo-1601050690597-df0568f70950') },
+    { id: 6, name: 'Vada Pav', chef: 'Priya S.', chefId: 1, price: 2.99, originalPrice: null, category: 'Snacks', dietary: 'Veg', rating: 4.7, emoji: '🍔', discount: null, desc: "Mumbai's iconic street food — spiced potato fritter in a soft bun with garlic chutney.", imageUrl: U('photo-1606491956689-2ea866880c84') },
+    { id: 7, name: 'Masala Pakora', chef: 'Lena K.', chefId: 3, price: 3.49, originalPrice: 4.49, category: 'Snacks', dietary: 'Veg', rating: 4.6, emoji: '🍟', discount: '22% OFF', desc: 'Crispy gram flour fritters loaded with onion, spinach & fresh coriander.', imageUrl: U('photo-1674143683189-38c9e3e2f02a') },
+    { id: 8, name: 'Aloo Tikki Chaat', chef: 'Priya S.', chefId: 1, price: 4.99, originalPrice: null, category: 'Snacks', dietary: 'Veg', rating: 4.9, emoji: '🥔', discount: null, desc: 'Crispy spiced potato patties topped with chutneys, yoghurt & sev.', imageUrl: U('photo-1668236543090-82eba5ee5976') },
+    { id: 9, name: 'Pav Bhaji', chef: 'Marco L.', chefId: 2, price: 5.99, originalPrice: null, category: 'Snacks', dietary: 'Veg', rating: 4.8, emoji: '🥞', discount: null, desc: 'Thick mixed vegetable curry served with buttered toasted pav bun.', imageUrl: U('photo-1626132647523-68c12db9e1a3') },
+    { id: 10, name: 'Bhel Puri', chef: 'Lena K.', chefId: 3, price: 3.49, originalPrice: null, category: 'Snacks', dietary: 'Vegan', rating: 4.5, emoji: '🥗', discount: null, desc: 'Puffed rice mixed with onion, tomato, tamarind chutney & spices.', imageUrl: U('photo-1565557623262-b51c2513a641') },
 
     // SOUPS
-    { id: 11, name: 'Creamy Tomato Basil Soup', chef: 'Marco L.', chefId: 2, price: 6.99, originalPrice: null, category: 'Soups', dietary: 'Vegan', rating: 4.5, emoji: 'ðŸ…', discount: null, desc: 'Silky roasted tomato soup blended with fresh basil and coconut cream.', imageUrl: U('photo-1547592180-85f173990554') },
-    { id: 12, name: 'Chicken Noodle Broth', chef: 'Lena K.', chefId: 3, price: 8.49, originalPrice: 10.99, category: 'Soups', dietary: 'Non-Veg', rating: 4.7, emoji: 'ðŸœ', discount: '20% OFF', desc: 'Hearty classic made with tender chicken, thin noodles & garden herbs.', imageUrl: U('photo-1569718212165-3a8278d5f624') },
+    { id: 11, name: 'Creamy Tomato Basil Soup', chef: 'Marco L.', chefId: 2, price: 6.99, originalPrice: null, category: 'Soups', dietary: 'Vegan', rating: 4.5, emoji: '🍅', discount: null, desc: 'Silky roasted tomato soup blended with fresh basil and coconut cream.', imageUrl: U('photo-1547592180-85f173990554') },
+    { id: 12, name: 'Chicken Noodle Broth', chef: 'Lena K.', chefId: 3, price: 8.49, originalPrice: 10.99, category: 'Soups', dietary: 'Non-Veg', rating: 4.7, emoji: '🍜', discount: '20% OFF', desc: 'Hearty classic made with tender chicken, thin noodles & garden herbs.', imageUrl: U('photo-1569718212165-3a8278d5f624') },
 
     // PASTA
-    { id: 13, name: 'Truffle Mushroom Pasta', chef: 'Marco L.', chefId: 2, price: 14.99, originalPrice: null, category: 'Pasta', dietary: 'Veg', rating: 4.9, emoji: 'ðŸ', discount: null, desc: 'Tagliatelle tossed in truffle cream sauce with wild mushrooms & parmesan.', imageUrl: U('photo-1551183053-bf91798d765e') },
-    { id: 14, name: 'Spicy Arrabbiata', chef: 'Priya S.', chefId: 1, price: 12.49, originalPrice: null, category: 'Pasta', dietary: 'Vegan', rating: 4.6, emoji: 'ðŸŒ¶ï¸', discount: null, desc: 'Penne in a fiery garlic-chilli tomato sauce â€” pure southern Italian.', imageUrl: U('photo-1598866594230-a7c12756260f') },
+    { id: 13, name: 'Truffle Mushroom Pasta', chef: 'Marco L.', chefId: 2, price: 14.99, originalPrice: null, category: 'Pasta', dietary: 'Veg', rating: 4.9, emoji: '🍝', discount: null, desc: 'Tagliatelle tossed in truffle cream sauce with wild mushrooms & parmesan.', imageUrl: U('photo-1551183053-bf91798d765e') },
+    { id: 14, name: 'Spicy Arrabbiata', chef: 'Priya S.', chefId: 1, price: 12.49, originalPrice: null, category: 'Pasta', dietary: 'Vegan', rating: 4.6, emoji: '🌶️', discount: null, desc: 'Penne in a fiery garlic-chilli tomato sauce — pure southern Italian.', imageUrl: U('photo-1598866594230-a7c12756260f') },
 
     // MAIN COURSE
-    { id: 15, name: 'Butter Chicken Curry', chef: 'Priya S.', chefId: 1, price: 13.99, originalPrice: 16.99, category: 'Main Course', dietary: 'Non-Veg', rating: 5.0, emoji: 'ðŸ›', discount: '15% OFF', desc: 'Tender chicken thighs slow-cooked in velvety butter tomato gravy.', imageUrl: U('photo-1588166524941-3bf61a9c41db') },
-    { id: 16, name: 'Paneer Tikka Masala', chef: 'Lena K.', chefId: 3, price: 12.99, originalPrice: null, category: 'Main Course', dietary: 'Veg', rating: 4.8, emoji: 'ðŸ§€', discount: null, desc: 'Tandoor-grilled cottage cheese in smoky cashew-based masala curry.', imageUrl: U('photo-1589302168068-964664d93dc0') },
-    { id: 17, name: 'Grilled Salmon Bowl', chef: 'Marco L.', chefId: 2, price: 17.99, originalPrice: null, category: 'Main Course', dietary: 'Non-Veg', rating: 4.7, emoji: 'ðŸŸ', discount: null, desc: 'Atlantic salmon with garlic butter over jasmine rice and stir-fried greens.', imageUrl: U('photo-1467003909585-2f8a72700288') },
-    { id: 18, name: 'Chicken Biryani', chef: 'Lena K.', chefId: 3, price: 13.49, originalPrice: null, category: 'Main Course', dietary: 'Non-Veg', rating: 4.9, emoji: 'ðŸš', discount: null, desc: 'Fragrant long-grain basmati rice slow-cooked with marinated chicken & whole spices.', imageUrl: U('photo-1563379091339-03b21ab4a4f8') },
-    { id: 19, name: 'Dal Makhani', chef: 'Priya S.', chefId: 1, price: 9.99, originalPrice: null, category: 'Main Course', dietary: 'Veg', rating: 4.8, emoji: 'ðŸ«›', discount: null, desc: 'Overnight slow-cooked black lentils in rich butter-cream tomato gravy.', imageUrl: U('photo-1585937421612-70a008356fbe') },
+    { id: 15, name: 'Butter Chicken Curry', chef: 'Priya S.', chefId: 1, price: 13.99, originalPrice: 16.99, category: 'Main Course', dietary: 'Non-Veg', rating: 5.0, emoji: '🍗', discount: '15% OFF', desc: 'Tender chicken thighs slow-cooked in velvety butter tomato gravy.', imageUrl: U('photo-1588166524941-3bf61a9c41db') },
+    { id: 16, name: 'Paneer Tikka Masala', chef: 'Lena K.', chefId: 3, price: 12.99, originalPrice: null, category: 'Main Course', dietary: 'Veg', rating: 4.8, emoji: '🧀', discount: null, desc: 'Tandoor-grilled cottage cheese in smoky cashew-based masala curry.', imageUrl: U('photo-1589302168068-964664d93dc0') },
+    { id: 17, name: 'Grilled Salmon Bowl', chef: 'Marco L.', chefId: 2, price: 17.99, originalPrice: null, category: 'Main Course', dietary: 'Non-Veg', rating: 4.7, emoji: '🐟', discount: null, desc: 'Atlantic salmon with garlic butter over jasmine rice and stir-fried greens.', imageUrl: U('photo-1467003909585-2f8a72700288') },
+    { id: 18, name: 'Chicken Biryani', chef: 'Lena K.', chefId: 3, price: 13.49, originalPrice: null, category: 'Main Course', dietary: 'Non-Veg', rating: 4.9, emoji: '🍚', discount: null, desc: 'Fragrant long-grain basmati rice slow-cooked with marinated chicken & whole spices.', imageUrl: U('photo-1563379091339-03b21ab4a4f8') },
+    { id: 19, name: 'Dal Makhani', chef: 'Priya S.', chefId: 1, price: 9.99, originalPrice: null, category: 'Main Course', dietary: 'Veg', rating: 4.8, emoji: '🍲', discount: null, desc: 'Overnight slow-cooked black lentils in rich butter-cream tomato gravy.', imageUrl: U('photo-1585937421612-70a008356fbe') },
 
     // BURGERS
-    { id: 20, name: 'Classic Beef Burger', chef: 'Lena K.', chefId: 3, price: 11.99, originalPrice: null, category: 'Burgers', dietary: 'Non-Veg', rating: 4.6, emoji: 'ðŸ”', discount: null, desc: '200g beef patty with American cheddar, pickles, lettuce & house sauce.', imageUrl: U('photo-1568901346375-23c9450c58cd') },
-    { id: 21, name: 'Crispy Veg Burger', chef: 'Priya S.', chefId: 1, price: 9.49, originalPrice: 11.49, category: 'Burgers', dietary: 'Veg', rating: 4.5, emoji: 'ðŸ¥¦', discount: '17% OFF', desc: 'Crunchy chickpea patty with sriracha mayo, avocado & fresh slaw.', imageUrl: U('photo-1550950158-d0d960ddf409') },
+    { id: 20, name: 'Classic Beef Burger', chef: 'Lena K.', chefId: 3, price: 11.99, originalPrice: null, category: 'Burgers', dietary: 'Non-Veg', rating: 4.6, emoji: '🍔', discount: null, desc: '200g beef patty with American cheddar, pickles, lettuce & house sauce.', imageUrl: U('photo-1568901346375-23c9450c58cd') },
+    { id: 21, name: 'Crispy Veg Burger', chef: 'Priya S.', chefId: 1, price: 9.49, originalPrice: 11.49, category: 'Burgers', dietary: 'Veg', rating: 4.5, emoji: '🍟', discount: '17% OFF', desc: 'Crunchy chickpea patty with sriracha mayo, avocado & fresh slaw.', imageUrl: U('photo-1550950158-d0d960ddf409') },
 
     // BEVERAGES
-    { id: 22, name: 'Masala Chai', chef: 'Priya S.', chefId: 1, price: 1.99, originalPrice: null, category: 'Beverages', dietary: 'Veg', rating: 4.9, emoji: 'â˜•', discount: null, desc: 'Freshly brewed strong tea with ginger, cardamom, cinnamon & whole spices.', imageUrl: U('photo-1561336313-0bd5e0b27ec8') },
-    { id: 23, name: 'Filter Coffee', chef: 'Marco L.', chefId: 2, price: 2.49, originalPrice: null, category: 'Beverages', dietary: 'Veg', rating: 4.8, emoji: 'â˜•', discount: null, desc: 'South Indian decoction coffee with frothy milk, served hot in a traditional tumbler.', imageUrl: U('photo-1509042239860-f550ce710b93') },
-    { id: 24, name: 'Rose Milk', chef: 'Lena K.', chefId: 3, price: 2.99, originalPrice: null, category: 'Beverages', dietary: 'Veg', rating: 4.6, emoji: 'ðŸŒ¹', discount: null, desc: 'Chilled whole milk blended with rose syrup & basil seeds. Refreshing & aromatic.', imageUrl: U('photo-1553979459-d2229ba7433b') },
-    { id: 25, name: 'Sweet Mango Lassi', chef: 'Priya S.', chefId: 1, price: 2.99, originalPrice: null, category: 'Beverages', dietary: 'Veg', rating: 4.9, emoji: 'ðŸ¥­', discount: null, desc: 'Creamy Alphonso mango blended with chilled yoghurt & a hint of cardamom.', imageUrl: U('photo-1571091718767-18b5b1457add') },
-    { id: 26, name: 'Badam Milk', chef: 'Priya S.', chefId: 1, price: 3.49, originalPrice: null, category: 'Beverages', dietary: 'Veg', rating: 4.7, emoji: 'ðŸ¥›', discount: null, desc: 'Rich warm milk infused with almond paste, saffron & cardamom.', imageUrl: U('photo-1550583724-b2692b85b150') },
+    { id: 22, name: 'Masala Chai', chef: 'Priya S.', chefId: 1, price: 1.99, originalPrice: null, category: 'Beverages', dietary: 'Veg', rating: 4.9, emoji: '☕', discount: null, desc: 'Freshly brewed strong tea with ginger, cardamom, cinnamon & whole spices.', imageUrl: U('photo-1561336313-0bd5e0b27ec8') },
+    { id: 23, name: 'Filter Coffee', chef: 'Marco L.', chefId: 2, price: 2.49, originalPrice: null, category: 'Beverages', dietary: 'Veg', rating: 4.8, emoji: '☕', discount: null, desc: 'South Indian decoction coffee with frothy milk, served hot in a traditional tumbler.', imageUrl: U('photo-1509042239860-f550ce710b93') },
+    { id: 24, name: 'Rose Milk', chef: 'Lena K.', chefId: 3, price: 2.99, originalPrice: null, category: 'Beverages', dietary: 'Veg', rating: 4.6, emoji: '🌸', discount: null, desc: 'Chilled whole milk blended with rose syrup & basil seeds. Refreshing & aromatic.', imageUrl: U('photo-1553979459-d2229ba7433b') },
+    { id: 25, name: 'Sweet Mango Lassi', chef: 'Priya S.', chefId: 1, price: 2.99, originalPrice: null, category: 'Beverages', dietary: 'Veg', rating: 4.9, emoji: '🥭', discount: null, desc: 'Creamy Alphonso mango blended with chilled yoghurt & a hint of cardamom.', imageUrl: U('photo-1571091718767-18b5b1457add') },
+    { id: 26, name: 'Badam Milk', chef: 'Priya S.', chefId: 1, price: 3.49, originalPrice: null, category: 'Beverages', dietary: 'Veg', rating: 4.7, emoji: '🥛', discount: null, desc: 'Rich warm milk infused with almond paste, saffron & cardamom.', imageUrl: U('photo-1550583724-b2692b85b150') },
 
     // COLD DRINKS
-    { id: 27, name: 'Nimbu Pani', chef: 'Marco L.', chefId: 2, price: 1.99, originalPrice: null, category: 'Cold Drinks', dietary: 'Vegan', rating: 4.8, emoji: 'ðŸ‹', discount: null, desc: 'Fresh squeezed lemon water with black salt, cumin & mint. Indian salty lemonade.', imageUrl: U('photo-1621506289937-a8e4df240d0b') },
-    { id: 28, name: 'Aam Panna', chef: 'Priya S.', chefId: 1, price: 2.49, originalPrice: null, category: 'Cold Drinks', dietary: 'Vegan', rating: 4.7, emoji: 'ðŸ¥­', discount: null, desc: 'Raw green mango drink with roasted cumin, black salt & mint. A summer classic.', imageUrl: U('photo-1621506289937-a8e4df240d0b') },
-    { id: 29, name: 'Jaljeera Punch', chef: 'Lena K.', chefId: 3, price: 1.99, originalPrice: null, category: 'Cold Drinks', dietary: 'Vegan', rating: 4.6, emoji: 'ðŸ«™', discount: null, desc: 'Tangy cumin water punch with mint, ginger, tamarind & black salt.', imageUrl: U('photo-1570197788417-0e82375c9371') },
-    { id: 30, name: 'Coconut Water', chef: 'Marco L.', chefId: 2, price: 2.99, originalPrice: null, category: 'Cold Drinks', dietary: 'Vegan', rating: 4.9, emoji: 'ðŸ¥¥', discount: null, desc: 'Fresh tender coconut water served straight from the coconut with ice.', imageUrl: U('photo-1553361371-9b22f78e8b1d') },
-    { id: 31, name: 'Sugarcane Juice', chef: 'Lena K.', chefId: 3, price: 2.49, originalPrice: null, category: 'Cold Drinks', dietary: 'Vegan', rating: 4.8, emoji: 'ðŸŒ¿', discount: null, desc: 'Freshly pressed sugarcane juice with lemon, ginger & black salt.', imageUrl: U('photo-1615485290382-441e4d049cb5') },
-    { id: 32, name: 'Thandai', chef: 'Priya S.', chefId: 1, price: 3.49, originalPrice: null, category: 'Cold Drinks', dietary: 'Veg', rating: 4.8, emoji: 'ðŸ¶', discount: null, desc: 'Chilled milk blended with almonds, fennel, melon seeds, saffron & rosewater.', imageUrl: U('photo-1587049352846-4a222e784d38') },
+    { id: 27, name: 'Nimbu Pani', chef: 'Marco L.', chefId: 2, price: 1.99, originalPrice: null, category: 'Cold Drinks', dietary: 'Vegan', rating: 4.8, emoji: '🍋', discount: null, desc: 'Fresh squeezed lemon water with black salt, cumin & mint. Indian salty lemonade.', imageUrl: U('photo-1621506289937-a8e4df240d0b') },
+    { id: 28, name: 'Aam Panna', chef: 'Priya S.', chefId: 1, price: 2.49, originalPrice: null, category: 'Cold Drinks', dietary: 'Vegan', rating: 4.7, emoji: '🥭', discount: null, desc: 'Raw green mango drink with roasted cumin, black salt & mint. A summer classic.', imageUrl: U('photo-1621506289937-a8e4df240d0b') },
+    { id: 29, name: 'Jaljeera Punch', chef: 'Lena K.', chefId: 3, price: 1.99, originalPrice: null, category: 'Cold Drinks', dietary: 'Vegan', rating: 4.6, emoji: '🥔', discount: null, desc: 'Tangy cumin water punch with mint, ginger, tamarind & black salt.', imageUrl: U('photo-1570197788417-0e82375c9371') },
+    { id: 30, name: 'Coconut Water', chef: 'Marco L.', chefId: 2, price: 2.99, originalPrice: null, category: 'Cold Drinks', dietary: 'Vegan', rating: 4.9, emoji: '🥥', discount: null, desc: 'Fresh tender coconut water served straight from the coconut with ice.', imageUrl: U('photo-1553361371-9b22f78e8b1d') },
+    { id: 31, name: 'Sugarcane Juice', chef: 'Lena K.', chefId: 3, price: 2.49, originalPrice: null, category: 'Cold Drinks', dietary: 'Vegan', rating: 4.8, emoji: '🌿', discount: null, desc: 'Freshly pressed sugarcane juice with lemon, ginger & black salt.', imageUrl: U('photo-1615485290382-441e4d049cb5') },
+    { id: 32, name: 'Thandai', chef: 'Priya S.', chefId: 1, price: 3.49, originalPrice: null, category: 'Cold Drinks', dietary: 'Veg', rating: 4.8, emoji: '🥛', discount: null, desc: 'Chilled milk blended with almonds, fennel, melon seeds, saffron & rosewater.', imageUrl: U('photo-1587049352846-4a222e784d38') },
 ];
 
-// â”€â”€ CHEFS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// — CHEFS —————————————————————————————————————————————————————————
 const CHEFS = [
-    { id: 1, name: 'Priya Sharma', specialty: 'Indian & Fusion', emoji: 'ðŸ‘©â€ðŸ³', rating: 4.9, dishes: 14, orders: 320, lat: 0.002, lng: 0.001 },
-    { id: 2, name: 'Marco Lombardi', specialty: 'Italian & Mediterranean', emoji: 'ðŸ‘¨â€ðŸ³', rating: 4.8, dishes: 9, orders: 280, lat: -0.001, lng: 0.003 },
-    { id: 3, name: 'Lena Kim', specialty: 'Continental & Korean', emoji: 'ðŸ§‘â€ðŸ³', rating: 4.7, dishes: 9, orders: 195, lat: 0.003, lng: -0.002 },
+    { id: 1, name: 'Priya Sharma', specialty: 'Indian & Fusion', emoji: '👩‍🍳', rating: 4.9, dishes: 14, orders: 320, lat: 0.002, lng: 0.001 },
+    { id: 2, name: 'Marco Lombardi', specialty: 'Italian & Mediterranean', emoji: '👨‍🍳', rating: 4.8, dishes: 9, orders: 280, lat: -0.001, lng: 0.003 },
+    { id: 3, name: 'Lena Kim', specialty: 'Continental & Korean', emoji: '🧑‍🍳', rating: 4.7, dishes: 9, orders: 195, lat: 0.003, lng: -0.002 },
 ];
 
-// â”€â”€ AI RECIPES DATABASE (35 recipes) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// — AI RECIPES DATABASE (35 recipes) ——————————————————————————————
 // Ingredient synonyms: custom-typed words map to canonical recipe words
 const ING_SYNONYMS = {
     // Vegetables
@@ -129,177 +129,177 @@ function normalizeIngredient(raw) {
 
 const AI_RECIPES = [
     {
-        name: 'Masala Chai', emoji: 'â˜•', time: '10 min', difficulty: 'Easy', calories: 85, dietary: 'Veg', color: '#f97316',
+        name: 'Masala Chai', emoji: '☕', time: '10 min', difficulty: 'Easy', calories: 85, dietary: 'Veg', color: '#f97316',
         ingredients: ['tea leaves', 'milk', 'ginger', 'cardamom', 'sugar', 'water', 'cinnamon'],
         steps: ['Boil water with ginger & cardamom', 'Add tea leaves and cinnamon', 'Add milk and sugar', 'Simmer 3 minutes', 'Strain and serve hot']
     },
     {
-        name: 'Aloo Sabzi', emoji: 'ðŸ¥”', time: '20 min', difficulty: 'Easy', calories: 180, dietary: 'Veg', color: '#eab308',
+        name: 'Aloo Sabzi', emoji: '🥔', time: '20 min', difficulty: 'Easy', calories: 180, dietary: 'Veg', color: '#eab308',
         ingredients: ['potato', 'onion', 'tomato', 'turmeric', 'cumin', 'salt', 'oil'],
         steps: ['Heat oil, add cumin seeds', 'Add onion, cook golden', 'Add tomato & turmeric', 'Add boiled cubed potato', 'Cook 5 min, garnish with coriander']
     },
     {
-        name: 'Dal Tadka', emoji: 'ðŸ«›', time: '25 min', difficulty: 'Easy', calories: 210, dietary: 'Veg', color: '#f59e0b',
+        name: 'Dal Tadka', emoji: '🍲', time: '25 min', difficulty: 'Easy', calories: 210, dietary: 'Veg', color: '#f59e0b',
         ingredients: ['dal', 'onion', 'tomato', 'garlic', 'ginger', 'turmeric', 'cumin', 'ghee'],
         steps: ['Boil dal with turmeric until soft', 'Heat ghee, crackle cumin & garlic', 'Add onion-tomato paste, cook well', 'Pour tadka over dal', 'Garnish with coriander']
     },
     {
-        name: 'Chicken Curry', emoji: 'ðŸ—', time: '35 min', difficulty: 'Medium', calories: 340, dietary: 'Non-Veg', color: '#ef4444',
+        name: 'Chicken Curry', emoji: '🍗', time: '35 min', difficulty: 'Medium', calories: 340, dietary: 'Non-Veg', color: '#ef4444',
         ingredients: ['chicken', 'onion', 'tomato', 'ginger', 'garlic', 'garam masala', 'turmeric', 'oil', 'curd'],
         steps: ['Marinate chicken in curd & spices', 'Fry onions golden in oil', 'Add ginger-garlic paste, cook 2 min', 'Add tomatoes, cook till oil separates', 'Add chicken, cook covered 20 min']
     },
     {
-        name: 'Vegetable Fried Rice', emoji: 'ðŸš', time: '20 min', difficulty: 'Easy', calories: 280, dietary: 'Veg', color: '#22c55e',
+        name: 'Vegetable Fried Rice', emoji: '🍚', time: '20 min', difficulty: 'Easy', calories: 280, dietary: 'Veg', color: '#22c55e',
         ingredients: ['rice', 'carrot', 'peas', 'garlic', 'ginger', 'eggs', 'oil', 'spring onion', 'soy sauce'],
         steps: ['Cook rice and cool completely', 'Scramble eggs in wok, set aside', 'Stir-fry garlic, add vegetables', 'Add rice, toss on high heat', 'Add soy sauce, eggs, spring onion']
     },
     {
-        name: 'Paneer Bhurji', emoji: 'ðŸ§€', time: '15 min', difficulty: 'Easy', calories: 220, dietary: 'Veg', color: '#f97316',
+        name: 'Paneer Bhurji', emoji: '🧀', time: '15 min', difficulty: 'Easy', calories: 220, dietary: 'Veg', color: '#f97316',
         ingredients: ['paneer', 'onion', 'tomato', 'green chilli', 'turmeric', 'cumin', 'oil', 'salt'],
-        steps: ['Heat oil, crackle cumin', 'Add onion, green chilli, sautÃ©', 'Add tomato, cook till mushy', 'Crumble paneer, add spices', 'Mix well, garnish with coriander']
+        steps: ['Heat oil, crackle cumin', 'Add onion, green chilli, sauté', 'Add tomato, cook till mushy', 'Crumble paneer, add spices', 'Mix well, garnish with coriander']
     },
     {
-        name: 'Masala Omelette', emoji: 'ðŸ³', time: '10 min', difficulty: 'Easy', calories: 160, dietary: 'Non-Veg', color: '#eab308',
+        name: 'Masala Omelette', emoji: '🥚', time: '10 min', difficulty: 'Easy', calories: 160, dietary: 'Non-Veg', color: '#eab308',
         ingredients: ['eggs', 'onion', 'tomato', 'green chilli', 'coriander', 'turmeric', 'salt', 'oil'],
         steps: ['Beat eggs with salt and turmeric', 'Add chopped onion, chilli, tomato, coriander', 'Heat oil in pan on medium heat', 'Pour egg mixture, cook 2-3 min', 'Fold over and serve hot']
     },
     {
-        name: 'Palak Paneer', emoji: 'ðŸ¥¬', time: '30 min', difficulty: 'Medium', calories: 240, dietary: 'Veg', color: '#16a34a',
+        name: 'Palak Paneer', emoji: '🥬', time: '30 min', difficulty: 'Medium', calories: 240, dietary: 'Veg', color: '#16a34a',
         ingredients: ['paneer', 'spinach', 'onion', 'tomato', 'garlic', 'ginger', 'cream', 'garam masala', 'oil'],
-        steps: ['Blanch spinach, blend to purÃ©e', 'Fry paneer till golden, keep aside', 'Cook onion-tomato masala in oil', 'Add spinach purÃ©e, simmer 5 min', 'Add paneer and cream, cook 3 min']
+        steps: ['Blanch spinach, blend to purée', 'Fry paneer till golden, keep aside', 'Cook onion-tomato masala in oil', 'Add spinach purée, simmer 5 min', 'Add paneer and cream, cook 3 min']
     },
     {
-        name: 'Rajma', emoji: 'ðŸ«˜', time: '40 min', difficulty: 'Medium', calories: 260, dietary: 'Veg', color: '#b91c1c',
+        name: 'Rajma', emoji: '🍟', time: '40 min', difficulty: 'Medium', calories: 260, dietary: 'Veg', color: '#b91c1c',
         ingredients: ['kidney beans', 'onion', 'tomato', 'ginger', 'garlic', 'garam masala', 'oil', 'turmeric'],
         steps: ['Soak & pressure cook rajma until soft', 'Fry onions golden in oil', 'Add ginger-garlic paste, cook 3 min', 'Add tomatoes & all spices, cook well', 'Add rajma with water, simmer 15 min']
     },
     {
-        name: 'Upma', emoji: 'ðŸš', time: '20 min', difficulty: 'Easy', calories: 200, dietary: 'Veg', color: '#d97706',
+        name: 'Upma', emoji: '🍚', time: '20 min', difficulty: 'Easy', calories: 200, dietary: 'Veg', color: '#d97706',
         ingredients: ['semolina', 'onion', 'green chilli', 'ginger', 'mustard seeds', 'curry leaves', 'water', 'salt', 'oil'],
-        steps: ['Dry roast semolina till fragrant', 'Fry mustard seeds, curry leaves', 'Add onion, chilli, ginger â€“ sautÃ©', 'Add boiling water and salt', 'Add semolina, stir till cooked']
+        steps: ['Dry roast semolina till fragrant', 'Fry mustard seeds, curry leaves', 'Add onion, chilli, ginger — sauté', 'Add boiling water and salt', 'Add semolina, stir till cooked']
     },
     {
-        name: 'Poha', emoji: 'ðŸ½ï¸', time: '15 min', difficulty: 'Easy', calories: 170, dietary: 'Veg', color: '#f59e0b',
+        name: 'Poha', emoji: '🥣', time: '15 min', difficulty: 'Easy', calories: 170, dietary: 'Veg', color: '#f59e0b',
         ingredients: ['flattened rice', 'onion', 'green chilli', 'turmeric', 'mustard seeds', 'curry leaves', 'potato', 'lemon'],
         steps: ['Wash poha, keep moist and fluffy', 'Fry mustard, curry leaves, onion, potato', 'Add turmeric, green chilli', 'Add poha and mix gently', 'Finish with lemon juice, serve warm']
     },
     {
-        name: 'Chole Bhature', emoji: 'ðŸ«™', time: '35 min', difficulty: 'Medium', calories: 420, dietary: 'Veg', color: '#d97706',
+        name: 'Chole Bhature', emoji: '🥔', time: '35 min', difficulty: 'Medium', calories: 420, dietary: 'Veg', color: '#d97706',
         ingredients: ['chickpeas', 'onion', 'tomato', 'ginger', 'garlic', 'cumin', 'oil', 'wheat flour', 'curd'],
         steps: ['Pressure cook soaked chickpeas', 'Make caramelised masala base', 'Add chickpeas with water, simmer', 'Make soft dough with flour and curd', 'Deep fry bhatura till puffed & golden']
     },
     {
-        name: 'Aloo Paratha', emoji: 'ðŸ«“', time: '30 min', difficulty: 'Medium', calories: 320, dietary: 'Veg', color: '#d97706',
+        name: 'Aloo Paratha', emoji: '🫓', time: '30 min', difficulty: 'Medium', calories: 320, dietary: 'Veg', color: '#d97706',
         ingredients: ['potato', 'wheat flour', 'cumin', 'coriander', 'green chilli', 'butter', 'oil', 'salt'],
         steps: ['Make soft wheat dough', 'Boil, mash potatoes with spices', 'Roll dough, stuff with potato mix', 'Seal edges, roll flat gently', 'Cook on tawa with butter till golden']
     },
     {
-        name: 'Jeera Rice', emoji: 'ðŸš', time: '20 min', difficulty: 'Easy', calories: 190, dietary: 'Vegan', color: '#22c55e',
+        name: 'Jeera Rice', emoji: '🍚', time: '20 min', difficulty: 'Easy', calories: 190, dietary: 'Vegan', color: '#22c55e',
         ingredients: ['rice', 'cumin', 'ghee', 'salt', 'water'],
         steps: ['Soak rice 20 min, drain', 'Heat ghee in pot, add cumin', 'When cumin crackles, add rice', 'Add 2x water and salt', 'Cook covered on low flame 15 min']
     },
     {
-        name: 'Vegetable Khichdi', emoji: 'ðŸ²', time: '25 min', difficulty: 'Easy', calories: 220, dietary: 'Veg', color: '#84cc16',
+        name: 'Vegetable Khichdi', emoji: '🍲', time: '25 min', difficulty: 'Easy', calories: 220, dietary: 'Veg', color: '#84cc16',
         ingredients: ['rice', 'dal', 'carrot', 'peas', 'potato', 'turmeric', 'cumin', 'ghee', 'salt', 'ginger'],
         steps: ['Rinse rice and dal together', 'Pressure cook with vegetables & water', 'Prepare tadka with ghee and cumin', 'Add ginger, mix into khichdi', 'Adjust consistency, serve hot']
     },
     {
-        name: 'Egg Curry', emoji: 'ðŸ¥š', time: '25 min', difficulty: 'Easy', calories: 280, dietary: 'Non-Veg', color: '#f59e0b',
+        name: 'Egg Curry', emoji: '🥚', time: '25 min', difficulty: 'Easy', calories: 280, dietary: 'Non-Veg', color: '#f59e0b',
         ingredients: ['eggs', 'onion', 'tomato', 'ginger', 'garlic', 'garam masala', 'turmeric', 'oil'],
         steps: ['Hard boil eggs, peel and slit', 'Fry eggs till skin is golden', 'Make onion-tomato masala in same pan', 'Add all spices, cook well', 'Slide in eggs, simmer 8 min']
     },
     {
-        name: 'Mango Lassi', emoji: 'ðŸ¥­', time: '5 min', difficulty: 'Easy', calories: 180, dietary: 'Veg', color: '#f97316',
+        name: 'Mango Lassi', emoji: '🥭', time: '5 min', difficulty: 'Easy', calories: 180, dietary: 'Veg', color: '#f97316',
         ingredients: ['mango', 'curd', 'milk', 'sugar', 'cardamom', 'ice'],
         steps: ['Peel and chop ripe mango', 'Blend mango with curd and milk', 'Add sugar and cardamom powder', 'Blend until completely smooth', 'Serve chilled with ice']
     },
     {
-        name: 'Tomato Soup', emoji: 'ðŸ…', time: '20 min', difficulty: 'Easy', calories: 90, dietary: 'Vegan', color: '#ef4444',
+        name: 'Tomato Soup', emoji: '🍅', time: '20 min', difficulty: 'Easy', calories: 90, dietary: 'Vegan', color: '#ef4444',
         ingredients: ['tomato', 'onion', 'garlic', 'cream', 'butter', 'salt', 'sugar', 'basil'],
         steps: ['Roast tomatoes and onion in oven', 'Blend with garlic until smooth', 'Strain through sieve for silky texture', 'Heat with butter and cream', 'Season with salt, sugar and fresh basil']
     },
     {
-        name: 'Nimbu Pani', emoji: 'ðŸ‹', time: '5 min', difficulty: 'Easy', calories: 40, dietary: 'Vegan', color: '#84cc16',
+        name: 'Nimbu Pani', emoji: '🍋', time: '5 min', difficulty: 'Easy', calories: 40, dietary: 'Vegan', color: '#84cc16',
         ingredients: ['lemon', 'water', 'sugar', 'salt', 'cumin', 'mint'],
         steps: ['Squeeze lemon into glass', 'Add water and sugar, stir', 'Add black salt and cumin powder', 'Add ice and mint leaves', 'Serve chilled immediately']
     },
     {
-        name: 'Raita', emoji: 'ðŸ¥›', time: '5 min', difficulty: 'Easy', calories: 80, dietary: 'Veg', color: '#38bdf8',
+        name: 'Raita', emoji: '🥛', time: '5 min', difficulty: 'Easy', calories: 80, dietary: 'Veg', color: '#38bdf8',
         ingredients: ['curd', 'cucumber', 'onion', 'tomato', 'cumin', 'salt', 'coriander', 'mint'],
         steps: ['Whisk curd until smooth', 'Chop cucumber, onion, tomato finely', 'Mix vegetables into curd', 'Add roasted cumin & salt', 'Garnish with mint & coriander']
     },
     {
-        name: 'Bread Upma', emoji: 'ðŸž', time: '15 min', difficulty: 'Easy', calories: 210, dietary: 'Veg', color: '#f59e0b',
+        name: 'Bread Upma', emoji: '🥞', time: '15 min', difficulty: 'Easy', calories: 210, dietary: 'Veg', color: '#f59e0b',
         ingredients: ['bread', 'onion', 'tomato', 'green chilli', 'mustard seeds', 'curry leaves', 'oil', 'turmeric', 'salt'],
-        steps: ['Tear bread into small pieces', 'Fry mustard seeds, curry leaves', 'Add onion, chilli, tomato â€” cook', 'Add turmeric and salt', 'Add bread pieces, toss 3 min']
+        steps: ['Tear bread into small pieces', 'Fry mustard seeds, curry leaves', 'Add onion, chilli, tomato — cook', 'Add turmeric and salt', 'Add bread pieces, toss 3 min']
     },
     {
-        name: 'Chicken Pulao', emoji: 'ðŸ—', time: '40 min', difficulty: 'Medium', calories: 380, dietary: 'Non-Veg', color: '#78716c',
+        name: 'Chicken Pulao', emoji: '🍗', time: '40 min', difficulty: 'Medium', calories: 380, dietary: 'Non-Veg', color: '#78716c',
         ingredients: ['chicken', 'rice', 'onion', 'tomato', 'ginger', 'garlic', 'garam masala', 'oil'],
         steps: ['Soak basmati rice', 'Fry whole spices in ghee', 'Add onion till golden, add chicken', 'Add tomato-yogurt masala, cook', 'Layer rice, add water, dum cook 20 min']
     },
     {
-        name: 'Capsicum Stir Fry', emoji: 'ðŸ«‘', time: '15 min', difficulty: 'Easy', calories: 120, dietary: 'Vegan', color: '#22c55e',
+        name: 'Capsicum Stir Fry', emoji: '🫑', time: '15 min', difficulty: 'Easy', calories: 120, dietary: 'Vegan', color: '#22c55e',
         ingredients: ['bell pepper', 'onion', 'garlic', 'oil', 'cumin', 'turmeric', 'salt'],
-        steps: ['Heat oil, crackle cumin', 'Add garlic and onion, sautÃ© 2 min', 'Add sliced capsicum/bell pepper', 'Add turmeric, salt, toss on high heat', 'Cook 5 min, serve crisp']
+        steps: ['Heat oil, crackle cumin', 'Add garlic and onion, sauté 2 min', 'Add sliced capsicum/bell pepper', 'Add turmeric, salt, toss on high heat', 'Cook 5 min, serve crisp']
     },
     {
-        name: 'Cauliflower Sabzi', emoji: 'ðŸ¥¦', time: '20 min', difficulty: 'Easy', calories: 130, dietary: 'Vegan', color: '#84cc16',
+        name: 'Cauliflower Sabzi', emoji: '🍟', time: '20 min', difficulty: 'Easy', calories: 130, dietary: 'Vegan', color: '#84cc16',
         ingredients: ['cauliflower', 'onion', 'tomato', 'turmeric', 'cumin', 'coriander', 'oil', 'salt', 'ginger'],
         steps: ['Heat oil, crackle cumin', 'Add onion, cook till translucent', 'Add tomato, ginger, spices', 'Add cauliflower florets, mix well', 'Cover and cook 12 min, garnish with coriander']
     },
     {
-        name: 'Egg Bhurji', emoji: 'ðŸ³', time: '10 min', difficulty: 'Easy', calories: 175, dietary: 'Non-Veg', color: '#f97316',
+        name: 'Egg Bhurji', emoji: '🥚', time: '10 min', difficulty: 'Easy', calories: 175, dietary: 'Non-Veg', color: '#f97316',
         ingredients: ['eggs', 'onion', 'tomato', 'green chilli', 'butter', 'salt', 'turmeric', 'coriander'],
         steps: ['Melt butter in pan on medium heat', 'Add onion and green chilli, fry', 'Add tomato, cook till soft', 'Beat eggs and pour in', 'Scramble on medium heat, add coriander']
     },
     {
-        name: 'Banana Smoothie', emoji: 'ðŸŒ', time: '5 min', difficulty: 'Easy', calories: 200, dietary: 'Veg', color: '#eab308',
+        name: 'Banana Smoothie', emoji: '🍌', time: '5 min', difficulty: 'Easy', calories: 200, dietary: 'Veg', color: '#eab308',
         ingredients: ['banana', 'milk', 'curd', 'honey', 'ice', 'cardamom'],
         steps: ['Peel and slice ripe banana', 'Add banana, milk and curd to blender', 'Add honey and cardamom powder', 'Blend on high until smooth', 'Pour over ice and serve chilled']
     },
     {
-        name: 'Garlic Naan', emoji: 'ðŸ«“', time: '25 min', difficulty: 'Medium', calories: 250, dietary: 'Veg', color: '#d97706',
+        name: 'Garlic Naan', emoji: '🫓', time: '25 min', difficulty: 'Medium', calories: 250, dietary: 'Veg', color: '#d97706',
         ingredients: ['wheat flour', 'curd', 'garlic', 'butter', 'salt', 'oil', 'baking powder'],
         steps: ['Mix flour, curd, salt, baking powder', 'Knead soft dough, rest 30 min', 'Roll naan, apply garlic butter', 'Cook on hot tawa or in oven', 'Brush with butter and garlic, serve hot']
     },
     {
-        name: 'Lemon Rice', emoji: 'ðŸ‹', time: '20 min', difficulty: 'Easy', calories: 210, dietary: 'Vegan', color: '#84cc16',
+        name: 'Lemon Rice', emoji: '🍋', time: '20 min', difficulty: 'Easy', calories: 210, dietary: 'Vegan', color: '#84cc16',
         ingredients: ['rice', 'lemon', 'mustard seeds', 'curry leaves', 'peanuts', 'turmeric', 'oil', 'salt', 'green chilli'],
         steps: ['Cook rice, let cool completely', 'Heat oil, crackle mustard seeds', 'Add peanuts, curry leaves, green chilli', 'Add turmeric and cooked rice', 'Squeeze lemon juice, mix well']
     },
     {
-        name: 'Kadhi Pakora', emoji: 'ðŸ«•', time: '35 min', difficulty: 'Medium', calories: 280, dietary: 'Veg', color: '#f59e0b',
+        name: 'Kadhi Pakora', emoji: '🫕', time: '35 min', difficulty: 'Medium', calories: 280, dietary: 'Veg', color: '#f59e0b',
         ingredients: ['curd', 'gram flour', 'onion', 'mustard seeds', 'curry leaves', 'turmeric', 'oil', 'salt'],
         steps: ['Whisk curd with gram flour and water', 'Heat & add mustard, curry leaves, onion', 'Add turmeric, pour curd mixture', 'Make gram flour fritter balls, fry', 'Add pakoras to kadhi, simmer 10 min']
     },
     {
-        name: 'Paneer Tikka', emoji: 'ðŸ§€', time: '25 min', difficulty: 'Easy', calories: 290, dietary: 'Veg', color: '#ef4444',
+        name: 'Paneer Tikka', emoji: '🧀', time: '25 min', difficulty: 'Easy', calories: 290, dietary: 'Veg', color: '#ef4444',
         ingredients: ['paneer', 'curd', 'ginger', 'garlic', 'garam masala', 'turmeric', 'oil', 'salt', 'bell pepper', 'onion'],
-        steps: ['Cut paneer into cubes', 'Marinate in spiced curd 30 min', 'Thread onto skewers with pepper, onion', 'Grill or bake at 220Â°C for 15 min', 'Serve with mint chutney']
+        steps: ['Cut paneer into cubes', 'Marinate in spiced curd 30 min', 'Thread onto skewers with pepper, onion', 'Grill or bake at 220°C for 15 min', 'Serve with mint chutney']
     },
     {
-        name: 'Mixed Veg Curry', emoji: 'ðŸ›', time: '30 min', difficulty: 'Easy', calories: 200, dietary: 'Vegan', color: '#22c55e',
+        name: 'Mixed Veg Curry', emoji: '🍗', time: '30 min', difficulty: 'Easy', calories: 200, dietary: 'Vegan', color: '#22c55e',
         ingredients: ['potato', 'carrot', 'peas', 'cauliflower', 'onion', 'tomato', 'ginger', 'garlic', 'turmeric', 'oil'],
         steps: ['Chop all vegetables into pieces', 'Fry onion-tomato-ginger-garlic masala', 'Add turmeric and other spices', 'Add vegetables, stir to coat', 'Add water, cover and cook 15 min']
     },
     {
-        name: 'Fish Curry', emoji: 'ðŸŸ', time: '30 min', difficulty: 'Medium', calories: 320, dietary: 'Non-Veg', color: '#0ea5e9',
+        name: 'Fish Curry', emoji: '🐟', time: '30 min', difficulty: 'Medium', calories: 320, dietary: 'Non-Veg', color: '#0ea5e9',
         ingredients: ['fish', 'onion', 'tomato', 'coconut milk', 'ginger', 'garlic', 'turmeric', 'chilli', 'oil'],
         steps: ['Clean and marinate fish in turmeric & salt', 'Fry onion-tomato masala in oil', 'Add ginger-garlic, cook 2 min', 'Add coconut milk, bring to simmer', 'Slide in fish, cook 8 min gently']
     },
     {
-        name: 'Anda Paratha', emoji: 'ðŸ«“', time: '20 min', difficulty: 'Easy', calories: 290, dietary: 'Non-Veg', color: '#f59e0b',
+        name: 'Anda Paratha', emoji: '🫓', time: '20 min', difficulty: 'Easy', calories: 290, dietary: 'Non-Veg', color: '#f59e0b',
         ingredients: ['eggs', 'wheat flour', 'onion', 'green chilli', 'coriander', 'oil', 'salt', 'turmeric'],
         steps: ['Make simple wheat dough', 'Roll thin paratha on tawa', 'Beat egg with onion, chilli, coriander', 'Pour egg mix on paratha, flip carefully', 'Cook both sides with oil till golden']
     },
     {
-        name: 'Coconut Chutney', emoji: 'ðŸ¥¥', time: '10 min', difficulty: 'Easy', calories: 90, dietary: 'Vegan', color: '#84cc16',
+        name: 'Coconut Chutney', emoji: '🥥', time: '10 min', difficulty: 'Easy', calories: 90, dietary: 'Vegan', color: '#84cc16',
         ingredients: ['coconut', 'green chilli', 'ginger', 'coriander', 'salt', 'lemon', 'mustard seeds', 'curry leaves'],
         steps: ['Grate fresh coconut or use desiccated', 'Blend with chilli, ginger, coriander', 'Add salt and lemon juice to taste', 'Prepare tadka: mustard seeds, curry leaves', 'Pour tadka over chutney, mix well']
     },
     {
-        name: 'Sweet Corn Soup', emoji: 'ðŸŒ½', time: '20 min', difficulty: 'Easy', calories: 110, dietary: 'Vegan', color: '#eab308',
+        name: 'Sweet Corn Soup', emoji: '🌽', time: '20 min', difficulty: 'Easy', calories: 110, dietary: 'Vegan', color: '#eab308',
         ingredients: ['corn', 'onion', 'garlic', 'ginger', 'cornflour', 'salt', 'pepper', 'oil'],
         steps: ['Heat oil, fry onion, ginger, garlic', 'Add corn kernels, cook 3 min', 'Add water and bring to boil', 'Mix cornflour with water, pour in', 'Season with salt and pepper, serve hot']
     },
@@ -314,7 +314,7 @@ let leafletMap = null;
 let currentUser = null;
 let otpTimerInterval = null;
 
-// â”€â”€ INIT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// — INIT ——————————————————————————————————————————————————————————
 document.addEventListener('DOMContentLoaded', () => {
     // Check stored login
     const stored = sessionStorage.getItem('ck_user');
@@ -325,7 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // else login overlay is shown by default (CSS)
 });
 
-// â”€â”€ SHOW TOAST (global, works before app loads) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// — SHOW TOAST (global, works before app loads) ———————————————————
 function showToastGlobal(msg, type) {
     const toast = document.getElementById('toast');
     toast.textContent = msg;
@@ -335,9 +335,9 @@ function showToastGlobal(msg, type) {
 }
 const showToast = showToastGlobal;
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// —————————————————————————————————————————————————————————————————
 //  LOGIN SYSTEM
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// —————————————————————————————————————————————————————————————————
 
 function switchLoginTab(tab) {
     document.getElementById('email-login-form').style.display = tab === 'email' ? 'block' : 'none';
@@ -349,10 +349,10 @@ function switchLoginTab(tab) {
 function handleEmailLogin() {
     const email = document.getElementById('login-email').value.trim();
     const pass = document.getElementById('login-password').value;
-    if (!email || !email.includes('@')) { showToast('âš ï¸ Please enter a valid email', 'error'); return; }
-    if (pass.length < 4) { showToast('âš ï¸ Password too short', 'error'); return; }
+    if (!email || !email.includes('@')) { showToast('⚠️ Please enter a valid email', 'error'); return; }
+    if (pass.length < 4) { showToast('⚠️ Password too short', 'error'); return; }
     const btn = document.getElementById('email-login-btn');
-    btn.textContent = 'Signing inâ€¦';
+    btn.textContent = 'Signing in…';
     setTimeout(() => {
         const name = email.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
         loginSuccess({ name, email, avatar: name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) });
@@ -361,17 +361,17 @@ function handleEmailLogin() {
 
 function sendOTP() {
     const phone = document.getElementById('login-phone').value.trim();
-    if (phone.length !== 10) { showToast('âš ï¸ Enter a valid 10-digit number', 'error'); return; }
+    if (phone.length !== 10) { showToast('⚠️ Enter a valid 10-digit number', 'error'); return; }
     const btn = document.getElementById('send-otp-btn');
-    btn.textContent = 'Sendingâ€¦';
+    btn.textContent = 'Sending…';
     setTimeout(() => {
         document.getElementById('phone-step-1').style.display = 'none';
         document.getElementById('phone-step-2').style.display = 'block';
         document.getElementById('otp-phone-display').textContent = '+91 ' + phone;
         document.getElementById('otp0').focus();
         startOTPTimer();
-        showToast('ðŸ“² OTP sent to +91 ' + phone, 'success');
-        btn.textContent = 'Send OTP ðŸ“²';
+        showToast('📱 OTP sent to +91 ' + phone, 'success');
+        btn.textContent = 'Send OTP 📱';
     }, 1000);
 }
 
@@ -395,7 +395,7 @@ function otpAutoFocus(el, idx) {
 
 function verifyOTP() {
     const otp = [0, 1, 2, 3, 4, 5].map(i => document.getElementById('otp' + i).value).join('');
-    if (otp.length < 6) { showToast('âš ï¸ Enter all 6 digits', 'error'); return; }
+    if (otp.length < 6) { showToast('⚠️ Enter all 6 digits', 'error'); return; }
     const phone = document.getElementById('login-phone').value;
     loginSuccess({ name: 'Mobile User', email: '', phone, avatar: 'US' });
 }
@@ -407,7 +407,7 @@ function backToPhone() {
 }
 
 function handleSocialLogin(provider) {
-    showToast(`ðŸ”’ ${provider} login coming soon!`, '');
+    showToast(`🔒 ${provider} login coming soon!`, '');
 }
 function handleGoogleLogin() {
     const picker = document.getElementById('google-picker');
@@ -423,7 +423,7 @@ function closeGooglePicker() {
 }
 function googlePickerNext() {
     const email = document.getElementById('gp-email').value.trim();
-    if (!email || !email.includes('@')) { showToast('âš ï¸ Enter a valid email', 'error'); return; }
+    if (!email || !email.includes('@')) { showToast('⚠️ Enter a valid email', 'error'); return; }
     document.getElementById('gp-email-disp').textContent = email;
     document.getElementById('gp-step-1').style.display = 'none';
     document.getElementById('gp-step-2').style.display = 'block';
@@ -436,7 +436,7 @@ function googlePickerBack() {
 function googleSignIn() {
     const email = document.getElementById('gp-email').value.trim();
     const pass = document.getElementById('gp-password').value;
-    if (!pass) { showToast('âš ï¸ Enter your password', 'error'); return; }
+    if (!pass) { showToast('⚠️ Enter your password', 'error'); return; }
     const name = email.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
     const avatar = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
     const accounts = getAccounts();
@@ -444,9 +444,9 @@ function googleSignIn() {
     saveAcct(accounts);
     closeGooglePicker();
     loginSuccess({ name, email, avatar });
-    showToast(`ðŸŽ‰ Welcome, ${name}!`, 'success');
+    showToast(`🎉 Welcome, ${name}!`, 'success');
 }
-// â”€â”€ ACCOUNT MANAGEMENT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// — ACCOUNT MANAGEMENT ————————————————————————————————————————————
 const ACCT_KEY = 'ck_accounts';
 function getAccounts() { return JSON.parse(localStorage.getItem(ACCT_KEY) || '[]'); }
 function saveAcct(a) { localStorage.setItem(ACCT_KEY, JSON.stringify(a)); }
@@ -464,7 +464,7 @@ function closeSignupModal() {
 }
 function checkSignupEmail() {
     const email = document.getElementById('su-email').value.trim();
-    if (!email || !email.includes('@')) { showToast('âš ï¸ Enter a valid email', 'error'); return; }
+    if (!email || !email.includes('@')) { showToast('⚠️ Enter a valid email', 'error'); return; }
     const found = getAccounts().find(a => a.email.toLowerCase() === email.toLowerCase());
     if (found) {
         document.getElementById('su-step-1').style.display = 'none';
@@ -474,7 +474,7 @@ function checkSignupEmail() {
             closeSignupModal();
             document.getElementById('login-email').value = email;
             document.getElementById('login-password').focus();
-            showToast('ðŸ‘‹ Account found! Enter your password.', '');
+            showToast('👋 Account found! Enter your password.', '');
         }, 2000);
     } else {
         document.getElementById('su-step-1').style.display = 'none';
@@ -491,16 +491,16 @@ function createAccount() {
     const name = document.getElementById('su-name').value.trim();
     const pass = document.getElementById('su-password').value;
     const conf = document.getElementById('su-confirm').value;
-    if (!name) { showToast('âš ï¸ Please enter your name', 'error'); return; }
-    if (pass.length < 6) { showToast('âš ï¸ Password must be 6+ characters', 'error'); return; }
-    if (pass !== conf) { showToast('âš ï¸ Passwords do not match', 'error'); return; }
+    if (!name) { showToast('⚠️ Please enter your name', 'error'); return; }
+    if (pass.length < 6) { showToast('⚠️ Password must be 6+ characters', 'error'); return; }
+    if (pass !== conf) { showToast('⚠️ Passwords do not match', 'error'); return; }
     const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
     const accounts = getAccounts();
     accounts.push({ email, name, password: pass, avatar: initials });
     saveAcct(accounts);
     closeSignupModal();
     loginSuccess({ name, email, avatar: initials });
-    showToast('ðŸŽ‰ Account created! Welcome to CloudKitchen!', 'success');
+    showToast('🎉 Account created! Welcome to CookGPT!', 'success');
 }
 
 function loginSuccess(user) {

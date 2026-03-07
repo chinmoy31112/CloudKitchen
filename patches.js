@@ -1,4 +1,4 @@
-// ── PATCHES: Prices in ₹ + Correct Image Fixes + New dishes ─────
+// ── COOKGPT PATCHES: Prices in ₹ + Correct Image Fixes + New dishes ─────
 window.addEventListener('load', () => {
 
     const BASE = 'https://images.unsplash.com/';
@@ -78,7 +78,7 @@ window.addEventListener('load', () => {
     const ACCT_KEY = 'ck_accounts';
     if (!localStorage.getItem(ACCT_KEY)) {
         localStorage.setItem(ACCT_KEY, JSON.stringify([
-            { email: 'test@cloudkitchen.com', name: 'Test User', password: 'pass1234', avatar: 'TU' }
+            { email: 'test@cookgpt.com', name: 'Test User', password: 'pass1234', avatar: 'TU' }
         ]));
     }
 });
